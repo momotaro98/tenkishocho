@@ -1,0 +1,1 @@
+from tenkishocho import HourPerDayTenki
