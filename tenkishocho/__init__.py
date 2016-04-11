@@ -1,1 +1,1 @@
-from .tenkishocho import HourPerDayTenki
+from .tenkishocho import HourPerDayTenki, DayPerMonthTenki

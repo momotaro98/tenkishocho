@@ -118,3 +118,72 @@ class HourPerDayTenki(object):
              }
         """
         return {int(row[0]): float(row[4]) for row in self._table} # 5番目のカラムは気温
+
+
+
+class DayPerMonthTenki(object):
+    """
+    description comming soon...
+    """
+
+    def __init__(self, year, month, prec_no=44, block_no=47662):
+        """ default region: Tokyo(prec_no=44), Tokyo(block_no=47662) """
+        self.year = year
+        self.month = month
+        self.prec_no = prec_no
+        self.block_no = block_no
+
+        self._url = URLBASE + 'daily_s1.php?' +\
+            'prec_no={0}&'.format(prec_no) +\
+            'block_no={0}&'.format(block_no) +\
+            'year={0}&'.format(year) +\
+            'month={0}'.format(month)
+
+        self._page = return_the_page_from_url(self._url)
+        self._parser = TenkishochoHTMLParser(('class', 'mtx'), ('style', 'text-align:right;'))
+        self._parser.feed(self._page) # self._parserにはテーブルデータがある
+
+        '''ここにself._parser.tableの分析(空文字対処用)のプログラムを加える必要あり'''
+
+        self._table = tuple(self._parser.table) # self._parserにはテーブルデータがある
+
+        '''
+        月日ごとページにおいて
+        self._parser.tableは全部で
+        (日、現地気圧(平均)、海面気圧(平均)、降水量(合計)、降水量(1時間最大)、降水量(10分間最大)、気温(平均)、気温(最高)、気温(最低)、湿度(平均)、湿度(最小)、平均風速、最大風速、最大風速風向、最大瞬間風速風速、最大瞬間風速風向、日照時間、積雪合計、最深積雪値、天気情報(昼)、天気情報(夜))
+        self._table -> (
+                        ('1', '1005.6', '1008.4', '--', '--', '--', ...),
+                        ('2', '1006.5', '1009.4', '--', '--', '--', ...),
+                        .
+                        .
+                        .
+                        )
+        '''
+
+    def get_kind_dict(self):
+        """
+        get all data in weather kind dict structure
+
+        Example returned dictionary
+        dict -> {
+            'temparature': {1: 19.3, 2: 19.6, ...},
+            'humidity': {1: 65.3, 2: 67.6, ...},
+            ...
+        }
+        """
+        pass
+
+    def get_ave_temparature(self):
+        """
+        get all data in weather kind dict structure
+
+        Example returned dictionary
+            {1: 19.3,
+             2: 19.6,
+             3: 20.8,
+             .
+             .
+             .
+             31: 20.1}
+        """
+        return {int(row[0]): float(row[6]) for row in self._table} # 7番目のカラムが気温
