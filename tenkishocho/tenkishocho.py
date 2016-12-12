@@ -145,7 +145,7 @@ class DayPerMonthTenki:
 
         '''ここにself._parser.tableの分析(空文字対処用)のプログラムを加える必要あり'''
 
-        self._table = tuple(self._parser.table) # self._parserにはテーブルデータがある
+        self._table = self._ret__table()
 
         '''
         月日ごとページにおいて
@@ -159,6 +159,16 @@ class DayPerMonthTenki:
                         .
                         )
         '''
+
+    def _ret__table(self):
+        """
+        当月でありHTMLテーブルにデータがない日付に関してはself._tableのrowに含めないようにする
+        """
+        table_list = list(self._parser.table)
+        # カラムがすべて揃っている行のみ
+        filtered_table_list = [row for row in table_list if len(row) >= 21]
+        ret_table = tuple(filtered_table_list)
+        return ret_table
 
     def get_kind_dict(self):
         """
