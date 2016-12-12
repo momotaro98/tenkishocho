@@ -24,7 +24,7 @@ class TenkishochoHTMLParser(HTMLParser):
     ISUE: 表における空のものはself.tableに入らないので、受け取った側で補填を任せている状態
     """
     def __init__(self, *set_attr_pairs):
-        super().__init__() # HTMLParserから継承する
+        super(TenkishochoHTMLParser, self).__init__(convert_charrefs=True)  # HTMLParserから継承する
         self.set_attr_set = { _p for _p in set_attr_pairs }
         self.table = [] # 外から見せる
         self._rowlist = []
@@ -50,7 +50,7 @@ class TenkishochoHTMLParser(HTMLParser):
             self._rowlist.append(data)
 
 
-class HourPerDayTenki(object):
+class HourPerDayTenki:
     """
     description comming soon...
     """
@@ -121,7 +121,7 @@ class HourPerDayTenki(object):
 
 
 
-class DayPerMonthTenki(object):
+class DayPerMonthTenki:
     """
     description comming soon...
     """
@@ -173,8 +173,13 @@ class DayPerMonthTenki(object):
         """
         pass
 
-    def get_ave_temparature(self):
+    def _ret_selcted_float_comlmn_dict(self, c_num):
+        return {int(row[0]): float(row[c_num]) for row in self._table}
+
+    def get_ave_temperature(self):
         """
+        平均気温を取得
+
         get all data in weather kind dict structure
 
         Example returned dictionary
@@ -186,4 +191,45 @@ class DayPerMonthTenki(object):
              .
              31: 20.1}
         """
-        return {int(row[0]): float(row[6]) for row in self._table} # 7番目のカラムが気温
+        # 平均気温は表の7列目
+        return self._ret_selcted_float_comlmn_dict(c_num=6)
+
+    def get_max_temperature(self):
+        """
+        最大気温を取得
+        """
+        # 最大気温は表の8列目
+        return self._ret_selcted_float_comlmn_dict(c_num=7)
+
+    def get_min_temperature(self):
+        """
+        最低気温を取得
+        """
+        # 最小気温は表の9列目
+        return self._ret_selcted_float_comlmn_dict(c_num=8)
+
+    def get_ave_humidity(self):
+        """
+        平均湿度を取得
+        """
+        # 平均湿度は表の10列目
+        return self._ret_selcted_float_comlmn_dict(c_num=9)
+
+    def get_ave_humidity(self):
+        """
+        最小湿度を取得
+        """
+        # 最小湿度は表の11列目
+        return self._ret_selcted_float_comlmn_dict(c_num=10)
+
+    def _ret_selcted_str_comlmn_dict(self, c_num):
+        """
+        """
+        return {int(row[0]): str(row[c_num]) for row in self._table}
+
+    def get_day_tenki(self):
+        '''
+        昼(06:00-18:00)の天気を取得
+        '''
+        # 昼天気は表の20列目
+        return self._ret_selcted_str_comlmn_dict(c_num=19)
