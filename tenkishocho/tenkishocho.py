@@ -225,7 +225,7 @@ class DayPerMonthTenki:
         # 平均湿度は表の10列目
         return self._ret_selcted_float_comlmn_dict(c_num=9)
 
-    def get_ave_humidity(self):
+    def get_min_humidity(self):
         """
         最小湿度を取得
         """
